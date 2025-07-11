@@ -50,26 +50,3 @@ class ExchangeRateManager:
 
     def get_all_exchange_rates(self) -> list[ExchangeRate]:
         return self.exchange_rates
-
-if __name__ == "__main__":
-    AUTH_KEY = "qxf4jMteliYvRPID4ELzuARpeFIJUuha"  # 발급받은 인증키
-    manager = ExchangeRateManager(AUTH_KEY)
-
-    print("환율 정보 가져오는 중...")
-    rates = manager.fetch_exchange_rates()
-
-    if rates:
-        print(f"총 {len(rates)}개의 환율 정보 로드 완료.")
-        # 예시: 미국 달러 정보 출력
-        usd_rate = manager.get_exchange_rate_by_currency("USD")
-        if usd_rate:
-            print(f"미국 달러 (USD) 매매 기준율: {usd_rate.deal_bas_r}")
-        else:
-            print("미국 달러 정보를 찾을 수 없습니다.")
-
-        # 모든 통화명 출력
-        print("\n모든 통화명:")
-        for rate in rates:
-            print(f"- {rate.cur_nm} ({rate.cur_unit})")
-    else:
-        print("환율 정보를 가져오지 못했습니다.")
