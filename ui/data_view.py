@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QTableView,
     QPushButton,
     QLabel,
+
     QDialog,
     QHeaderView,
     QGridLayout,
@@ -149,6 +150,7 @@ class DataViewWidget(QWidget):
 
         main_layout.addStretch() # 그리드 위젯들이 상단에 모이도록
 
+
         # 하단 상태 및 새로고침 영역
         bottom_layout = QHBoxLayout()
         self.status_label = QLabel("준비")
@@ -156,6 +158,7 @@ class DataViewWidget(QWidget):
         bottom_layout.addWidget(self.status_label)
         bottom_layout.addStretch()
         bottom_layout.addWidget(self.refresh_button)
+
         main_layout.addLayout(bottom_layout)
 
     def update_exchange_rates(self, rates: list[ExchangeRate]):

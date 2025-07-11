@@ -9,7 +9,6 @@ from PySide6.QtWidgets import (
 from ui.data_view import DataViewWidget
 from core.exchange_rate_manager import ExchangeRateManager
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -20,6 +19,7 @@ class MainWindow(QMainWindow):
         # 실제 사용 시에는 발급받은 인증키를 사용하세요.
         AUTH_KEY = "qxf4jMteliYvRPID4ELzuARpeFIJUuha"  # 발급받은 인증키
         self.exchange_manager = ExchangeRateManager(AUTH_KEY)
+
 
         # 메뉴바 생성
         self._create_menu_bar()
@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
 
         # 메인 레이아웃에 위젯 추가
         
+
         main_layout.addWidget(self.data_view)
 
         # 중앙 위젯 설정
