@@ -31,8 +31,6 @@ class MainWindow(QMainWindow):
         self.data_view = DataViewWidget()
 
         # 메인 레이아웃에 위젯 추가
-        
-
         main_layout.addWidget(self.data_view)
 
         # 중앙 위젯 설정
