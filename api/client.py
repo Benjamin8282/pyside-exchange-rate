@@ -1,4 +1,8 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # .env 파일에서 환경 변수 로드
 
 class ExchangeRateClient:
     BASE_URL = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON"
@@ -22,7 +26,11 @@ class ExchangeRateClient:
 
 
 if __name__ == "__main__":
-    AUTH_KEY = "qxf4jMteliYvRPID4ELzuARpeFIJUuha"  # 발급받은 인증키
+    AUTH_KEY = os.getenv("AUTH_KEY")  # .env 파일에서 AUTH_KEY 로드
+    if not AUTH_KEY:
+        print("AUTH_KEY 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.")
+        exit()
+
     client = ExchangeRateClient(AUTH_KEY)
 
     # 오늘 날짜로 테스트 (예: 2025-07-11)
