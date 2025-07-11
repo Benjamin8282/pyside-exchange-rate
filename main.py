@@ -1,3 +1,4 @@
+import os
 import sys
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
@@ -17,7 +18,11 @@ class MainWindow(QMainWindow):
 
         # ExchangeRateManager 초기화
         # 실제 사용 시에는 발급받은 인증키를 사용하세요.
-        AUTH_KEY = "qxf4jMteliYvRPID4ELzuARpeFIJUuha"  # 발급받은 인증키
+        AUTH_KEY = os.getenv("AUTH_KEY")  # .env 파일에서 AUTH_KEY 로드
+        if not AUTH_KEY:
+            print("AUTH_KEY 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.")
+            exit()
+
         self.exchange_manager = ExchangeRateManager(AUTH_KEY)
 
 
