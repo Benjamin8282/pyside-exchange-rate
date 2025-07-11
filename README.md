@@ -64,7 +64,7 @@ pyside-exchange-rate/
     ```
 
 4.  **환경 변수 설정:**
-    *   한국수출입은행 환율 정보 API에서 [인증키](https://www.koreaexim.go.kr/site/program/financial/exchangeKEY)를 발급받습니다.
+    *   한국수출입은행 환율 정보 API에서 [인증키](https://www.koreaexim.go.kr/ir/HPHKIR020M01?apino=2&viewtype=C&searchselect=&searchword=)를 발급받습니다.
     *   프로젝트 루트 디렉토리에 `.env` 파일을 생성하고 발급받은 인증키를 다음과 같이 추가합니다:
         ```
         AUTH_KEY="YOUR_API_KEY_HERE"
