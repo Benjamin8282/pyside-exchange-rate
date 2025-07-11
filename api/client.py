@@ -24,25 +24,3 @@ class ExchangeRateClient:
             print(f"API 요청 중 오류 발생: {e}")
             return None
 
-
-if __name__ == "__main__":
-    AUTH_KEY = os.getenv("AUTH_KEY")  # .env 파일에서 AUTH_KEY 로드
-    if not AUTH_KEY:
-        print("AUTH_KEY 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.")
-        exit()
-
-    client = ExchangeRateClient(AUTH_KEY)
-
-    # 오늘 날짜로 테스트 (예: 2025-07-11)
-    import datetime
-    today = datetime.date.today().strftime("%Y%m%d")
-
-    print(f"오늘 날짜 ({today}) 환율 정보 요청...")
-    rates = client.get_exchange_rates(searchdate=today)
-
-    if rates:
-        print("API 응답:")
-        import json
-        print(json.dumps(rates, indent=4, ensure_ascii=False))
-    else:
-        print("환율 정보를 가져오지 못했습니다.")
