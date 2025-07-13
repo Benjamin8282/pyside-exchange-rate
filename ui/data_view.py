@@ -132,6 +132,7 @@ class DataViewWidget(QWidget):
     def __init__(self, viewmodel: ExchangeRateViewModel, parent=None):
         super().__init__(parent)
         self.viewmodel = viewmodel
+        self._updating_ui = False # UI 업데이트 중인지 나타내는 플래그
 
         main_layout = QVBoxLayout(self)
 
@@ -156,6 +157,7 @@ class DataViewWidget(QWidget):
         self.refresh_button.clicked.connect(self.viewmodel.fetch_exchange_rates)
 
     def update_exchange_rates(self, rates: list[ExchangeRate]):
+        self._updating_ui = True # UI 업데이트 시작
         for i in reversed(range(self.rates_grid_layout.count())):
             widget_to_remove = self.rates_grid_layout.itemAt(i).widget()
             if widget_to_remove:
@@ -177,8 +179,11 @@ class DataViewWidget(QWidget):
                     if col >= 4:
                         col = 0
                         row += 1
+        self._updating_ui = False # UI 업데이트 종료
 
     def _show_detail_dialog_for_currency(self, currency_code: str):
+        if self._updating_ui: # UI 업데이트 중이면 다이얼로그를 열지 않음
+            return
         selected_rate = next((r for r in self.viewmodel._all_exchange_rates if r.cur_unit == currency_code), None)
         if selected_rate:
             dialog = ExchangeRateDetailDialog([selected_rate], self)
