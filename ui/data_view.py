@@ -179,7 +179,7 @@ class DataViewWidget(QWidget):
                         row += 1
 
     def _show_detail_dialog_for_currency(self, currency_code: str):
-        selected_rate = next((r for r in self.viewmodel.exchange_rates if r.cur_unit == currency_code), None)
+        selected_rate = next((r for r in self.viewmodel._all_exchange_rates if r.cur_unit == currency_code), None)
         if selected_rate:
             dialog = ExchangeRateDetailDialog([selected_rate], self)
             dialog.exec()
