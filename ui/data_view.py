@@ -5,16 +5,15 @@ from PySide6.QtWidgets import (
     QTableView,
     QPushButton,
     QLabel,
-
     QDialog,
     QHeaderView,
     QGridLayout,
-    QSizePolicy,
 )
 from PySide6.QtCore import Qt, QAbstractTableModel, QModelIndex, Signal
 from PySide6.QtGui import QFont, QMouseEvent
 
-from core.exchange_rate_model import ExchangeRate
+from model.exchange_rate_model import ExchangeRate
+from viewmodel.exchange_rate_viewmodel import ExchangeRateViewModel
 
 
 class ExchangeRateTableModel(QAbstractTableModel):
@@ -67,7 +66,6 @@ class ExchangeRateDetailDialog(QDialog):
         self.table_model = ExchangeRateTableModel(exchange_rates)
         self.table_view.setModel(self.table_model)
 
-        # 테이블 헤더 크기 조정
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table_view.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
@@ -79,7 +77,7 @@ class ExchangeRateDetailDialog(QDialog):
 
 
 class CurrencyRateWidget(QWidget):
-    clicked = Signal(str) # 통화 코드를 전달하는 시그널
+    clicked = Signal(str)
 
     def __init__(self, currency_code: str, currency_name: str, deal_bas_r: str, parent=None):
         super().__init__(parent)
@@ -87,21 +85,19 @@ class CurrencyRateWidget(QWidget):
         self.currency_name = currency_name
         self.deal_bas_r = deal_bas_r
 
-        self.setFixedSize(180, 120) # 고정 크기
+        self.setFixedSize(180, 120)
         self.setStyleSheet("background-color: white; border: 1px solid #ccc; border-radius: 5px;")
 
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignCenter)
-        layout.setContentsMargins(0, 0, 0, 0) # 마진 제거
-        layout.setSpacing(0) # 위젯 간 간격 제거
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
-        # 모든 정보를 담을 단일 라벨
         self.info_label = QLabel()
         self.info_label.setAlignment(Qt.AlignCenter)
-        self.info_label.setWordWrap(False) # 자동 줄바꿈 비활성화
-        self.info_label.setFixedSize(178, 118) # QLabel의 크기를 위젯 내부 공간에 맞춰 고정 (테두리 1px 고려)
+        self.info_label.setWordWrap(False)
+        self.info_label.setFixedSize(178, 118)
 
-        # 폰트 설정
         font_code = QFont()
         font_code.setPointSize(12)
         font_code.setBold(True)
@@ -113,8 +109,6 @@ class CurrencyRateWidget(QWidget):
         font_name = QFont()
         font_name.setPointSize(10)
 
-        # HTML을 사용하여 폰트 크기 및 색상 적용
-        # 매매 기준율은 큰 글씨, 통화 코드는 작게, 통화명은 더 작게
         html_text = f"""
         <div style="text-align:center;">
             <div style="font-size:{font_code.pointSize()}pt; font-weight:bold;">{self.currency_code}</div>
@@ -123,9 +117,8 @@ class CurrencyRateWidget(QWidget):
         </div>
         """
 
-        # QLabel에 HTML 렌더링 설정 및 적용
-        self.info_label.setTextFormat(Qt.RichText)  # HTML 렌더링 모드로 설정
-        self.info_label.setText(html_text)  # HTML 내용 적용
+        self.info_label.setTextFormat(Qt.RichText)
+        self.info_label.setText(html_text)
 
         layout.addWidget(self.info_label)
 
@@ -136,22 +129,18 @@ class CurrencyRateWidget(QWidget):
 
 
 class DataViewWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, viewmodel: ExchangeRateViewModel, parent=None):
         super().__init__(parent)
-
-        self.exchange_rates: list[ExchangeRate] = []
+        self.viewmodel = viewmodel
 
         main_layout = QVBoxLayout(self)
 
-        # 환율 정보 표시 그리드 레이아웃
         self.rates_grid_layout = QGridLayout()
-        self.rates_grid_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft) # 상단 왼쪽 정렬
+        self.rates_grid_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         main_layout.addLayout(self.rates_grid_layout)
 
-        main_layout.addStretch() # 그리드 위젯들이 상단에 모이도록
+        main_layout.addStretch()
 
-
-        # 하단 상태 및 새로고침 영역
         bottom_layout = QHBoxLayout()
         self.status_label = QLabel("준비")
         self.refresh_button = QPushButton("새로고침")
@@ -161,10 +150,12 @@ class DataViewWidget(QWidget):
 
         main_layout.addLayout(bottom_layout)
 
-    def update_exchange_rates(self, rates: list[ExchangeRate]):
-        self.exchange_rates = rates
+        # ViewModel과 연결
+        self.viewmodel.exchange_rates_changed.connect(self.update_exchange_rates)
+        self.viewmodel.status_changed.connect(self.status_label.setText)
+        self.refresh_button.clicked.connect(self.viewmodel.fetch_exchange_rates)
 
-        # 기존 위젯들 제거
+    def update_exchange_rates(self, rates: list[ExchangeRate]):
         for i in reversed(range(self.rates_grid_layout.count())):
             widget_to_remove = self.rates_grid_layout.itemAt(i).widget()
             if widget_to_remove:
@@ -172,10 +163,8 @@ class DataViewWidget(QWidget):
                 widget_to_remove.deleteLater()
 
         if rates:
-            row = 0
-            col = 0
+            row, col = 0, 0
             for rate in rates:
-                # result가 1인 경우에만 표시
                 if rate.result == 1:
                     currency_widget = CurrencyRateWidget(
                         currency_code=rate.cur_unit,
@@ -185,18 +174,14 @@ class DataViewWidget(QWidget):
                     currency_widget.clicked.connect(self._show_detail_dialog_for_currency)
                     self.rates_grid_layout.addWidget(currency_widget, row, col)
                     col += 1
-                    if col >= 4: # 한 줄에 4개씩 표시
+                    if col >= 4:
                         col = 0
                         row += 1
-            self.status_label.setText(f"총 {len([r for r in rates if r.result == 1])}개 환율 정보 로드 완료")
-        else:
-            self.status_label.setText("환율 정보를 가져오지 못했습니다.")
 
     def _show_detail_dialog_for_currency(self, currency_code: str):
-        # 클릭된 통화의 세부 정보만 보여주도록 수정
-        selected_rate = next((r for r in self.exchange_rates if r.cur_unit == currency_code), None)
+        selected_rate = next((r for r in self.viewmodel.exchange_rates if r.cur_unit == currency_code), None)
         if selected_rate:
-            dialog = ExchangeRateDetailDialog([selected_rate], self) # 단일 통화 정보만 전달
+            dialog = ExchangeRateDetailDialog([selected_rate], self)
             dialog.exec()
         else:
             self.status_label.setText(f"{currency_code} 환율 정보를 찾을 수 없습니다.")
