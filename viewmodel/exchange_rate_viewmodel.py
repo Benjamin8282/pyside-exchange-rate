@@ -61,7 +61,7 @@ class ExchangeRateViewModel(QObject):
         self._emit_filtered_rates()
         self._emit_available_currencies()
 
-    def _emit_filtered_rates():
+    def _emit_filtered_rates(self):
         self.exchange_rates_changed.emit(self.exchange_rates)
 
     def _emit_available_currencies(self):
