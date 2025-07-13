@@ -1,8 +1,8 @@
 from api.client import ExchangeRateClient
-from core.exchange_rate_model import ExchangeRate
+from model.exchange_rate_model import ExchangeRate
 import datetime
 
-class ExchangeRateManager:
+class ExchangeRateService:
     def __init__(self, authkey: str):
         self.client = ExchangeRateClient(authkey)
         self.exchange_rates: list[ExchangeRate] = []
