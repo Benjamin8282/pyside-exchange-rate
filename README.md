@@ -4,6 +4,7 @@
   <img src="https://github.com/user-attachments/assets/a677ffdb-82e6-40fe-85e7-4f5fa1894bdb" width="45%" style="margin-right:5%" />
   <img src="https://github.com/user-attachments/assets/69e0152f-cc13-45d1-96db-70f76f1ad67f" width="45%" />
 </p>
+
 ## 프로젝트 소개
 
 이 프로젝트는 PySide6 프레임워크를 사용하여 개발된 간단한 데스크톱 애플리케이션으로, 한국수출입은행에서 제공하는 공공 API를 통해 실시간 환율 정보를 조회하고 표시합니다. PySide6 학습 및 포트폴리오 목적으로 개발되었으며, **MVVM(Model-View-ViewModel) 아키텍처**를 적용하여 UI 로직과 비즈니스 로직을 명확하게 분리하고 테스트 용이성과 유지보수성을 높였습니다.
