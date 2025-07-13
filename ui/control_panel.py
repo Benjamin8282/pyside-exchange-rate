@@ -6,10 +6,14 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QLineEdit,
+    QPushButton,
+    QHBoxLayout
 )
 
 class ControlPanelWidget(QWidget):
     visibility_changed = Signal(str, bool)
+    select_all_requested = Signal()
+    deselect_all_requested = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -29,6 +33,18 @@ class ControlPanelWidget(QWidget):
         self.currency_list_widget.itemChanged.connect(self._on_item_changed)
         layout.addWidget(self.currency_list_widget)
 
+        # 모두 선택/해제 버튼
+        button_layout = QHBoxLayout()
+        self.select_all_button = QPushButton("모두 선택")
+        self.select_all_button.clicked.connect(self.select_all_requested.emit)
+        button_layout.addWidget(self.select_all_button)
+
+        self.deselect_all_button = QPushButton("모두 해제")
+        self.deselect_all_button.clicked.connect(self.deselect_all_requested.emit)
+        button_layout.addWidget(self.deselect_all_button)
+
+        layout.addLayout(button_layout)
+
         self.setMaximumWidth(250)
 
     def populate_currencies(self, currencies: list[tuple[str, str]], visible_currencies: dict):
@@ -38,7 +54,6 @@ class ControlPanelWidget(QWidget):
             item = QListWidgetItem(f"{code} ({name})")
             item.setData(Qt.UserRole, code)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            # 설정에서 불러온 값 또는 기본값(True)으로 체크 상태 설정
             is_checked = visible_currencies.get(code, True)
             item.setCheckState(Qt.Checked if is_checked else Qt.Unchecked)
             self.currency_list_widget.addItem(item)

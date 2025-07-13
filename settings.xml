@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<settings>
+    <currency id="AED" visible="true"/>
+    <currency id="AUD" visible="true"/>
+    <currency id="BHD" visible="true"/>
+    <currency id="BND" visible="true"/>
+    <currency id="CAD" visible="true"/>
+    <currency id="CHF" visible="true"/>
+    <currency id="CNH" visible="true"/>
+    <currency id="DKK" visible="true"/>
+    <currency id="EUR" visible="true"/>
+    <currency id="GBP" visible="true"/>
+    <currency id="HKD" visible="true"/>
+    <currency id="IDR(100)" visible="true"/>
+    <currency id="JPY(100)" visible="true"/>
+    <currency id="KRW" visible="true"/>
+    <currency id="KWD" visible="false"/>
+    <currency id="MYR" visible="true"/>
+    <currency id="NOK" visible="false"/>
+    <currency id="NZD" visible="true"/>
+    <currency id="SAR" visible="true"/>
+    <currency id="SEK" visible="true"/>
+    <currency id="SGD" visible="true"/>
+    <currency id="THB" visible="true"/>
+    <currency id="USD" visible="true"/>
+</settings>

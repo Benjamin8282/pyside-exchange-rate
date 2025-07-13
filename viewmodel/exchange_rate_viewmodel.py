@@ -45,7 +45,23 @@ class ExchangeRateViewModel(QObject):
         self._settings_manager.save_settings(self._visible_currencies)
         self._emit_filtered_rates()
 
-    def _emit_filtered_rates(self):
+    @Slot()
+    def select_all_currencies(self):
+        for rate in self._all_exchange_rates:
+            self._visible_currencies[rate.cur_unit] = True
+        self._settings_manager.save_settings(self._visible_currencies)
+        self._emit_filtered_rates()
+        self._emit_available_currencies()
+
+    @Slot()
+    def deselect_all_currencies(self):
+        for rate in self._all_exchange_rates:
+            self._visible_currencies[rate.cur_unit] = False
+        self._settings_manager.save_settings(self._visible_currencies)
+        self._emit_filtered_rates()
+        self._emit_available_currencies()
+
+    def _emit_filtered_rates():
         self.exchange_rates_changed.emit(self.exchange_rates)
 
     def _emit_available_currencies(self):

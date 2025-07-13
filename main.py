@@ -55,6 +55,8 @@ class MainWindow(QMainWindow):
 
         # ControlPanel의 시그널을 ViewModel의 슬롯에 연결
         self.control_panel.visibility_changed.connect(self.exchange_viewmodel.set_currency_visibility)
+        self.control_panel.select_all_requested.connect(self.exchange_viewmodel.select_all_currencies)
+        self.control_panel.deselect_all_requested.connect(self.exchange_viewmodel.deselect_all_currencies)
 
         # 새로고침 버튼 연결 (DataViewWidget 내부에 있으므로 DataViewWidget에서 연결)
         self.data_view.refresh_button.clicked.connect(self.exchange_viewmodel.fetch_exchange_rates)
