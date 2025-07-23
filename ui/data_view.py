@@ -21,20 +21,9 @@ from viewmodel.exchange_rate_viewmodel import ExchangeRateViewModel # 뷰와 모
 
 
 class ExchangeRateTableModel(QAbstractTableModel):
-    """
-    환율 데이터를 QTableView에 표시하기 위한 모델 클래스입니다.
-    QAbstractTableModel을 상속받아 데이터 제공 방식을 정의합니다.
-    """
     def __init__(self, data: list[ExchangeRate]):
-        """
-        ExchangeRateTableModel의 생성자입니다.
-
-        Args:
-            data (list[ExchangeRate]): 테이블에 표시할 ExchangeRate 객체 리스트.
-        """
-        super().__init__() # QAbstractTableModel의 생성자 호출
-        self._data = data # 테이블에 표시할 실제 데이터
-        # 테이블 헤더에 표시될 컬럼 이름들을 정의합니다.
+        super().__init__()
+        self._data = data
         self._headers = [
             "통화코드", "통화명", "전신환(송금) 받으실 때", "전신환(송금) 보내실 때",
             "매매 기준율", "장부가격", "년환가료율", "10일환가료율",
@@ -42,59 +31,44 @@ class ExchangeRateTableModel(QAbstractTableModel):
         ]
 
     def rowCount(self, parent=QModelIndex()) -> int:
-        """
-        테이블의 행(row) 개수를 반환합니다.
-        """
-        return len(self._data)
-
-    def columnCount(self, parent=QModelIndex()) -> int:
-        """
-        테이블의 열(column) 개수를 반환합니다.
-        """
+        # 속성 개수만큼 행이 존재 (헤더 개수)
         return len(self._headers)
 
+    def columnCount(self, parent=QModelIndex()) -> int:
+        # 데이터 개수만큼 열이 존재
+        return len(self._data)
+
     def data(self, index: QModelIndex, role=Qt.DisplayRole):
-        """
-        테이블의 특정 셀에 표시될 데이터를 반환합니다.
+        if role == Qt.DisplayRole:
+            row = index.row()     # 행 → 속성 인덱스
+            col = index.column()  # 열 → 데이터 인덱스
+            rate = self._data[col]
 
-        Args:
-            index (QModelIndex): 데이터를 요청하는 셀의 인덱스.
-            role (int, optional): 요청하는 데이터의 역할. 기본값은 Qt.DisplayRole (표시될 텍스트).
-
-        Returns:
-            any: 요청된 역할에 해당하는 데이터.
-        """
-        if role == Qt.DisplayRole: # 셀에 표시될 텍스트를 요청할 때
-            rate = self._data[index.row()] # 해당 행의 ExchangeRate 객체 가져오기
-            column = index.column() # 해당 열의 인덱스 가져오기
-            # 열 인덱스에 따라 ExchangeRate 객체의 해당 속성 값을 반환
-            if column == 0: return rate.cur_unit
-            if column == 1: return rate.cur_nm
-            if column == 2: return rate.ttb
-            if column == 3: return rate.tts
-            if column == 4: return rate.deal_bas_r
-            if column == 5: return rate.bkpr
-            if column == 6: return rate.yy_efee_r
-            if column == 7: return rate.ten_dd_efee_r
-            if column == 8: return rate.kftc_bkpr
-            if column == 9: return rate.kftc_deal_bas_r
-        return None # 다른 역할의 데이터는 처리하지 않음
+            # 행 번호에 따라 속성 선택
+            if row == 0: return rate.cur_unit
+            if row == 1: return rate.cur_nm
+            if row == 2: return rate.ttb
+            if row == 3: return rate.tts
+            if row == 4: return rate.deal_bas_r
+            if row == 5: return rate.bkpr
+            if row == 6: return rate.yy_efee_r
+            if row == 7: return rate.ten_dd_efee_r
+            if row == 8: return rate.kftc_bkpr
+            if row == 9: return rate.kftc_deal_bas_r
+        return None
 
     def headerData(self, section: int, orientation: Qt.Orientation, role=Qt.DisplayRole):
-        """
-        테이블의 헤더에 표시될 데이터를 반환합니다.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Vertical:
+                # 세로 헤더는 속성 이름 (행 헤더)
+                return self._headers[section]
+            elif orientation == Qt.Horizontal:
+                # 가로 헤더는 각 데이터 항목의 통화코드 또는 번호 등으로 표시 가능
+                # 예) 각 데이터의 통화코드로 표시
+                if 0 <= section < len(self._data):
+                    return self._data[section].cur_unit
+        return None
 
-        Args:
-            section (int): 헤더의 섹션 인덱스 (행 또는 열).
-            orientation (Qt.Orientation): 헤더의 방향 (수평 또는 수직).
-            role (int, optional): 요청하는 데이터의 역할. 기본값은 Qt.DisplayRole.
-
-        Returns:
-            any: 요청된 역할에 해당하는 헤더 데이터.
-        """
-        if role == Qt.DisplayRole and orientation == Qt.Horizontal: # 수평 헤더의 표시 텍스트를 요청할 때
-            return self._headers[section] # 정의된 헤더 이름 반환
-        return None # 다른 역할의 데이터는 처리하지 않음
 
 
 class ExchangeRateDetailDialog(QDialog):
