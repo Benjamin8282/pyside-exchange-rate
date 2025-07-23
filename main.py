@@ -3,7 +3,7 @@
 # 필요한 모듈들을 임포트합니다.
 import os # 환경 변수 접근을 위해 사용
 import sys # 시스템 관련 기능 (예: 애플리케이션 종료)을 위해 사용
-from PySide6.QtGui import QAction # 메뉴바 액션 생성을 위해 사용
+from PySide6.QtGui import QAction, QFontDatabase, QFont  # 메뉴바 액션 생성을 위해 사용
 from PySide6.QtWidgets import (
     QApplication, # PySide6 애플리케이션 객체
     QMainWindow,  # 메인 윈도우 클래스
@@ -102,11 +102,43 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    """
-    애플리케이션의 메인 실행 블록입니다.
-    """
-    app = QApplication(sys.argv) # QApplication 인스턴스 생성 (모든 PySide6 애플리케이션의 시작점)
-    window = MainWindow() # MainWindow 인스턴스 생성
-    apply_stylesheet(app, theme='dark_teal.xml') # Qt Material 스타일시트 적용 (다크 블루 테마)
-    window.show() # 메인 윈도우를 화면에 표시
-    sys.exit(app.exec()) # 애플리케이션 이벤트 루프 시작 및 종료 시 반환 코드 전달
+    app = QApplication(sys.argv)
+
+    # 머티리얼 테마 적용 (먼저!)
+    #apply_stylesheet(app, theme='dark_teal.xml')
+
+    # 폰트 등록 (Regular 폰트 먼저 등록)
+    font_paths = [
+        "fonts/NanumGothic.ttf",               # Regular
+        "fonts/NanumGothicBold.ttf",
+        "fonts/NanumGothicExtraBold.ttf",
+        "fonts/NanumGothicLight.ttf"
+    ]
+
+    regular_font_id = -1
+    for path in font_paths:
+        font_id = QFontDatabase.addApplicationFont(path)
+        if font_id == -1:
+            print(f"폰트 로드 실패: {path}")
+        else:
+            print(f"등록 완료: {path}")
+            if "NanumGothic.ttf" in path:  # Regular로 기본 설정할 폰트
+                regular_font_id = font_id
+
+    # 기본 폰트 설정
+    if regular_font_id != -1:
+        families = QFontDatabase.applicationFontFamilies(regular_font_id)
+        if families:
+            nanum_font = QFont(families[0])
+            QApplication.setFont(nanum_font)
+            print(f"기본 폰트 설정됨: {families[0]}")
+        else:
+            print("폰트 패밀리 찾을 수 없음")
+    else:
+        print("기본 폰트 등록 실패")
+
+    # 메인 윈도우 실행
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+
