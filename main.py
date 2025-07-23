@@ -19,6 +19,7 @@ from service.exchange_rate_service import ExchangeRateService # 환율 데이터
 from service.settings_manager import SettingsManager         # 애플리케이션 설정을 저장/로드하는 매니저
 from viewmodel.exchange_rate_viewmodel import ExchangeRateViewModel # 뷰와 모델을 연결하는 뷰모델
 
+from qt_material import apply_stylesheet
 
 class MainWindow(QMainWindow):
     """
@@ -106,5 +107,6 @@ if __name__ == "__main__":
     """
     app = QApplication(sys.argv) # QApplication 인스턴스 생성 (모든 PySide6 애플리케이션의 시작점)
     window = MainWindow() # MainWindow 인스턴스 생성
+    apply_stylesheet(app, theme='dark_teal.xml') # Qt Material 스타일시트 적용 (다크 블루 테마)
     window.show() # 메인 윈도우를 화면에 표시
     sys.exit(app.exec()) # 애플리케이션 이벤트 루프 시작 및 종료 시 반환 코드 전달
