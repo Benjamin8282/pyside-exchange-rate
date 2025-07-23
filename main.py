@@ -109,10 +109,10 @@ if __name__ == "__main__":
 
     # 폰트 등록 (Regular 폰트 먼저 등록)
     font_paths = [
-        "fonts/NanumGothic.ttf",               # Regular
-        "fonts/NanumGothicBold.ttf",
-        "fonts/NanumGothicExtraBold.ttf",
-        "fonts/NanumGothicLight.ttf"
+        "fonts/NanumBarunGothic.ttf",               # Regular
+        "fonts/NanumBarunGothicBold.ttf",
+        "fonts/NanumBarunGothicExtraBold.ttf",
+        "fonts/NanumBarunGothicLight.ttf"
     ]
 
     regular_font_id = -1
@@ -122,7 +122,7 @@ if __name__ == "__main__":
             print(f"폰트 로드 실패: {path}")
         else:
             print(f"등록 완료: {path}")
-            if "NanumGothic.ttf" in path:  # Regular로 기본 설정할 폰트
+            if "NanumBarunGothic.ttf" in path:  # Regular로 기본 설정할 폰트
                 regular_font_id = font_id
 
     # 기본 폰트 설정
